@@ -12,7 +12,8 @@ import 'package:platform/platform.dart';
 import 'package:tool_base/src/base/common.dart';
 import 'package:tool_base/src/cache.dart';
 import 'package:tool_base/src/base/file_system.dart';
-import 'package:tool_base/src/base/io.dart' show InternetAddress, SocketException;
+import 'package:tool_base/src/base/io.dart'
+    show InternetAddress, SocketException;
 import 'package:tool_base/src/base/net.dart';
 import 'package:tool_base/src/base/os.dart';
 
@@ -55,14 +56,16 @@ void main() {
 
     testUsingContext('should not throw when lock is acquired', () async {
       final Directory mockDirectory = MockDirectory();
-      when(mockFileSystem.file(argThat(endsWith('lockfile')))).thenReturn(mockFile);
+      when(mockFileSystem.file(argThat(endsWith('lockfile'))))
+          .thenReturn(mockFile);
       when(mockFile.existsSync()).thenReturn(true);
-      when(mockFile.openSync(mode: anyNamed('mode'))).thenReturn(mockRandomAccessFile);
+      when(mockFile.openSync(mode: anyNamed('mode')))
+          .thenReturn(mockRandomAccessFile);
       when(mockFileSystem.systemTempDirectory).thenReturn(mockDirectory);
       when(mockFileSystem.directory(any)).thenReturn(mockDirectory);
       when(mockDirectory.existsSync()).thenReturn(true);
       when(mockDirectory.path).thenReturn('/');
-      final Cache cache=Cache();
+      final Cache cache = Cache();
       await cache.lock();
       Cache.checkLockAcquired();
       Cache.releaseLockEarly();
@@ -72,9 +75,11 @@ void main() {
 
     testUsingContext('throws tool exit when lockfile open fails', () async {
       final Directory mockDirectory = MockDirectory();
-      when(mockFileSystem.file(argThat(endsWith('lockfile')))).thenReturn(mockFile);
+      when(mockFileSystem.file(argThat(endsWith('lockfile'))))
+          .thenReturn(mockFile);
       when(mockFile.existsSync()).thenReturn(true);
-      when(mockFile.openSync(mode: anyNamed('mode'))).thenThrow(const FileSystemException());
+      when(mockFile.openSync(mode: anyNamed('mode')))
+          .thenThrow(const FileSystemException());
       when(mockFileSystem.systemTempDirectory).thenReturn(mockDirectory);
       when(mockFileSystem.directory(any)).thenReturn(mockDirectory);
       when(mockDirectory.existsSync()).thenReturn(true);
@@ -84,10 +89,12 @@ void main() {
       FileSystem: () => mockFileSystem,
     });
 
-    testUsingContext('should not throw when FLUTTER_ALREADY_LOCKED is set', () async {
+    testUsingContext('should not throw when FLUTTER_ALREADY_LOCKED is set',
+        () async {
       Cache.checkLockAcquired();
     }, overrides: <Type, Generator>{
-      Platform: () => FakePlatform()..environment = <String, String>{'FLUTTER_ALREADY_LOCKED': 'true'},
+      Platform: () => FakePlatform(
+          environment: <String, String>{'FLUTTER_ALREADY_LOCKED': 'true'}),
     });
   });
 
@@ -100,30 +107,52 @@ void main() {
       memoryFileSystem = MemoryFileSystem();
     });
 
-    testUsingContext('Gradle wrapper should not be up to date, if some cached artifact is not available', () {
+    testUsingContext(
+        'Gradle wrapper should not be up to date, if some cached artifact is not available',
+        () {
       final GradleWrapper gradleWrapper = GradleWrapper(mockCache);
-      final Directory directory = fs.directory('/Applications/flutter/bin/cache');
+      final Directory directory =
+          fs.directory('/Applications/flutter/bin/cache');
       directory.createSync(recursive: true);
-      fs.file(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper', 'gradle', 'wrapper', 'gradle-wrapper.jar')).createSync(recursive: true);
-      when(mockCache.getCacheDir(fs.path.join('artifacts', 'gradle_wrapper'))).thenReturn(fs.directory(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper')));
+      fs
+          .file(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper',
+              'gradle', 'wrapper', 'gradle-wrapper.jar'))
+          .createSync(recursive: true);
+      when(mockCache.getCacheDir(fs.path.join('artifacts', 'gradle_wrapper')))
+          .thenReturn(fs.directory(
+              fs.path.join(directory.path, 'artifacts', 'gradle_wrapper')));
       expect(gradleWrapper.isUpToDateInner(), false);
     }, overrides: <Type, Generator>{
-      Cache: ()=> mockCache,
+      Cache: () => mockCache,
       FileSystem: () => memoryFileSystem,
     });
 
-    testUsingContext('Gradle wrapper should be up to date, only if all cached artifact are available', () {
+    testUsingContext(
+        'Gradle wrapper should be up to date, only if all cached artifact are available',
+        () {
       final GradleWrapper gradleWrapper = GradleWrapper(mockCache);
-      final Directory directory = fs.directory('/Applications/flutter/bin/cache');
+      final Directory directory =
+          fs.directory('/Applications/flutter/bin/cache');
       directory.createSync(recursive: true);
-      fs.file(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper', 'gradle', 'wrapper', 'gradle-wrapper.jar')).createSync(recursive: true);
-      fs.file(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper', 'gradlew')).createSync(recursive: true);
-      fs.file(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper', 'gradlew.bat')).createSync(recursive: true);
+      fs
+          .file(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper',
+              'gradle', 'wrapper', 'gradle-wrapper.jar'))
+          .createSync(recursive: true);
+      fs
+          .file(fs.path
+              .join(directory.path, 'artifacts', 'gradle_wrapper', 'gradlew'))
+          .createSync(recursive: true);
+      fs
+          .file(fs.path.join(
+              directory.path, 'artifacts', 'gradle_wrapper', 'gradlew.bat'))
+          .createSync(recursive: true);
 
-      when(mockCache.getCacheDir(fs.path.join('artifacts', 'gradle_wrapper'))).thenReturn(fs.directory(fs.path.join(directory.path, 'artifacts', 'gradle_wrapper')));
+      when(mockCache.getCacheDir(fs.path.join('artifacts', 'gradle_wrapper')))
+          .thenReturn(fs.directory(
+              fs.path.join(directory.path, 'artifacts', 'gradle_wrapper')));
       expect(gradleWrapper.isUpToDateInner(), true);
     }, overrides: <Type, Generator>{
-      Cache: ()=> mockCache,
+      Cache: () => mockCache,
       FileSystem: () => memoryFileSystem,
     });
 
@@ -132,7 +161,8 @@ void main() {
       final CachedArtifact artifact2 = MockCachedArtifact();
       when(artifact1.isUpToDate()).thenReturn(true);
       when(artifact2.isUpToDate()).thenReturn(false);
-      final Cache cache = Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
+      final Cache cache =
+          Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
       expect(cache.isUpToDate(), isFalse);
     });
     test('should be up to date, if all cached artifacts are', () {
@@ -140,7 +170,8 @@ void main() {
       final CachedArtifact artifact2 = MockCachedArtifact();
       when(artifact1.isUpToDate()).thenReturn(true);
       when(artifact2.isUpToDate()).thenReturn(true);
-      final Cache cache = Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
+      final Cache cache =
+          Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
       expect(cache.isUpToDate(), isTrue);
     });
     test('should update cached artifacts which are not up to date', () async {
@@ -148,28 +179,34 @@ void main() {
       final CachedArtifact artifact2 = MockCachedArtifact();
       when(artifact1.isUpToDate()).thenReturn(true);
       when(artifact2.isUpToDate()).thenReturn(false);
-      final Cache cache = Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
+      final Cache cache =
+          Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
       await cache.updateAll(<DevelopmentArtifact>{});
       verifyNever(artifact1.update(<DevelopmentArtifact>{}));
       verify(artifact2.update(<DevelopmentArtifact>{}));
     });
-    testUsingContext('getter dyLdLibEntry concatenates the output of each artifact\'s dyLdLibEntry getter', () async {
+    testUsingContext(
+        'getter dyLdLibEntry concatenates the output of each artifact\'s dyLdLibEntry getter',
+        () async {
       final CachedArtifact artifact1 = MockCachedArtifact();
       final CachedArtifact artifact2 = MockCachedArtifact();
       final CachedArtifact artifact3 = MockCachedArtifact();
       when(artifact1.dyLdLibPath).thenReturn('/path/to/alpha:/path/to/beta');
-      when(artifact2.dyLdLibPath).thenReturn('/path/to/gamma:/path/to/delta:/path/to/epsilon');
+      when(artifact2.dyLdLibPath)
+          .thenReturn('/path/to/gamma:/path/to/delta:/path/to/epsilon');
       when(artifact3.dyLdLibPath).thenReturn(''); // Empty output
-      final Cache cache = Cache(artifacts: <CachedArtifact>[artifact1, artifact2, artifact3]);
+      final Cache cache =
+          Cache(artifacts: <CachedArtifact>[artifact1, artifact2, artifact3]);
       expect(cache.dyLdLibEntry.key, 'DYLD_LIBRARY_PATH');
       expect(
         cache.dyLdLibEntry.value,
         '/path/to/alpha:/path/to/beta:/path/to/gamma:/path/to/delta:/path/to/epsilon',
       );
     }, overrides: <Type, Generator>{
-      Cache: ()=> mockCache,
+      Cache: () => mockCache,
     });
-    testUsingContext('failed storage.googleapis.com download shows China warning', () async {
+    testUsingContext(
+        'failed storage.googleapis.com download shows China warning', () async {
       final CachedArtifact artifact1 = MockCachedArtifact();
       final CachedArtifact artifact2 = MockCachedArtifact();
       when(artifact1.isUpToDate()).thenReturn(false);
@@ -180,7 +217,8 @@ void main() {
         'Connection reset by peer',
         address: address,
       ));
-      final Cache cache = Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
+      final Cache cache =
+          Cache(artifacts: <CachedArtifact>[artifact1, artifact2]);
       try {
         await cache.updateAll(<DevelopmentArtifact>{});
         fail('Mock thrown exception expected');
@@ -197,9 +235,12 @@ void main() {
   });
 
   testUsingContext('flattenNameSubdirs', () {
-    expect(flattenNameSubdirs(Uri.parse('http://flutter.dev/foo/bar')), 'flutter.dev/foo/bar');
-    expect(flattenNameSubdirs(Uri.parse('http://docs.flutter.io/foo/bar')), 'docs.flutter.io/foo/bar');
-    expect(flattenNameSubdirs(Uri.parse('https://www.flutter.dev')), 'www.flutter.dev');
+    expect(flattenNameSubdirs(Uri.parse('http://flutter.dev/foo/bar')),
+        'flutter.dev/foo/bar');
+    expect(flattenNameSubdirs(Uri.parse('http://docs.flutter.io/foo/bar')),
+        'docs.flutter.io/foo/bar');
+    expect(flattenNameSubdirs(Uri.parse('https://www.flutter.dev')),
+        'www.flutter.dev');
   }, overrides: <Type, Generator>{
     FileSystem: () => MemoryFileSystem(),
   });
@@ -222,16 +263,19 @@ void main() {
 
     setUp(() {
       fakeHttpClient = FakeHttpClient();
-      fakePlatform = FakePlatform()..environment = const <String, String>{};
+      fakePlatform = FakePlatform(environment: const <String, String>{});
       memoryFileSystem = MemoryFileSystem();
       mockCache = MockCache();
       mockOperatingSystemUtils = MockOperatingSystemUtils();
       when(mockOperatingSystemUtils.verifyZip(any)).thenReturn(true);
     });
 
-    testUsingContext('makes binary dirs readable and executable by all', () async {
-      final Directory artifactDir = fs.systemTempDirectory.createTempSync('artifact.');
-      final Directory downloadDir = fs.systemTempDirectory.createTempSync('download.');
+    testUsingContext('makes binary dirs readable and executable by all',
+        () async {
+      final Directory artifactDir =
+          fs.systemTempDirectory.createTempSync('artifact.');
+      final Directory downloadDir =
+          fs.systemTempDirectory.createTempSync('download.');
       when(mockCache.getArtifactDirectory(any)).thenReturn(artifactDir);
       when(mockCache.getDownloadDir()).thenReturn(downloadDir);
       final FakeCachedArtifact artifact = FakeCachedArtifact(
@@ -244,12 +288,14 @@ void main() {
       final Directory dir = memoryFileSystem.systemTempDirectory
           .listSync(recursive: true)
           .whereType<Directory>()
-          .singleWhere((Directory directory) => directory.basename == 'bin_dir', orElse: () => null);
+          .singleWhere((Directory directory) => directory.basename == 'bin_dir',
+              orElse: () => null);
       expect(dir, isNotNull);
       expect(dir.path, artifactDir.childDirectory('bin_dir').path);
-      verify(mockOperatingSystemUtils.chmod(argThat(hasPath(dir.path)), 'a+r,a+x'));
+      verify(mockOperatingSystemUtils.chmod(
+          argThat(hasPath(dir.path)), 'a+r,a+x'));
     }, overrides: <Type, Generator>{
-      Cache: ()=> mockCache,
+      Cache: () => mockCache,
       FileSystem: () => memoryFileSystem,
       HttpClientFactory: () => () => fakeHttpClient,
       OperatingSystemUtils: () => mockOperatingSystemUtils,
@@ -262,8 +308,7 @@ void main() {
         cache: MockCache(),
         requiredArtifacts: <DevelopmentArtifact>{
           DevelopmentArtifact.android,
-        }
-    );
+        });
     final Directory mockDirectory = MockDirectory();
     when(fakeCachedArtifact.cache.getArtifactDirectory(any))
         .thenReturn(mockDirectory);
@@ -271,9 +316,11 @@ void main() {
     when(mockDirectory.createSync(recursive: true))
         .thenThrow(const FileSystemException());
 
-    expect(() => fakeCachedArtifact.update(<DevelopmentArtifact>{
-      DevelopmentArtifact.android,
-    }), throwsA(isInstanceOf<ToolExit>()));
+    expect(
+        () => fakeCachedArtifact.update(<DevelopmentArtifact>{
+              DevelopmentArtifact.android,
+            }),
+        throwsA(isInstanceOf<ToolExit>()));
   }, overrides: <Type, Generator>{
     FileSystem: () => MemoryFileSystem(),
   });
@@ -304,11 +351,17 @@ class FakeCachedArtifact extends EngineCachedArtifact {
 }
 
 class MockFileSystem extends Mock implements FileSystem {}
+
 class MockFile extends Mock implements File {}
+
 class MockDirectory extends Mock implements Directory {}
 
 class MockRandomAccessFile extends Mock implements RandomAccessFile {}
+
 class MockCachedArtifact extends Mock implements CachedArtifact {}
+
 class MockInternetAddress extends Mock implements InternetAddress {}
+
 class MockCache extends Mock implements Cache {}
+
 class MockOperatingSystemUtils extends Mock implements OperatingSystemUtils {}

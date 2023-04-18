@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file/file.dart';
-import 'package:pub_cache/pub_cache.dart';
 
 import 'base/config.dart';
 import 'base/context.dart';
@@ -83,13 +82,5 @@ class ToolVersion {
     } else {
       return config.getValue(varName);
     }
-  }
-
-  String getInstalledVersion() {
-    return PubCache()
-        .getGlobalApplications()
-        .firstWhere((app) => app.name == packageName, orElse: () => null)
-        .version
-        .toString();
   }
 }

@@ -17,7 +17,7 @@ import '../src/mocks.dart';
 
 final Generator _kNoAnsiPlatform = () =>
     FakePlatform.fromPlatform(const LocalPlatform())
-      ..stdoutSupportsAnsi = false;
+        .copyWith(stdoutSupportsAnsi: false);
 
 void main() {
   final String red = RegExp.escape(AnsiTerminal.red);
@@ -68,7 +68,7 @@ void main() {
               r'\n$'));
     }, overrides: <Type, Generator>{
       OutputPreferences: () => OutputPreferences(showColor: true),
-      Platform: () => FakePlatform()..stdoutSupportsAnsi = true,
+      Platform: () => FakePlatform(stdoutSupportsAnsi: true),
     });
   });
 
@@ -209,7 +209,7 @@ void main() {
         Logger: () => StdoutLogger(),
         OutputPreferences: () => OutputPreferences(showColor: true),
         Platform: () =>
-            FakePlatform(operatingSystem: testOs)..stdoutSupportsAnsi = true,
+            FakePlatform(operatingSystem: testOs, stdoutSupportsAnsi: true),
         Stdio: () => mockStdio,
       });
 
@@ -252,7 +252,7 @@ void main() {
         Logger: () => StdoutLogger(),
         OutputPreferences: () => OutputPreferences(showColor: true),
         Platform: () =>
-            FakePlatform(operatingSystem: testOs)..stdoutSupportsAnsi = true,
+            FakePlatform(operatingSystem: testOs, stdoutSupportsAnsi: true),
         Stdio: () => mockStdio,
       });
 
@@ -596,7 +596,7 @@ void main() {
     }, overrides: <Type, Generator>{
       Logger: () => StdoutLogger(),
       OutputPreferences: () => OutputPreferences(showColor: true),
-      Platform: () => FakePlatform()..stdoutSupportsAnsi = true,
+      Platform: () => FakePlatform(stdoutSupportsAnsi: true),
       Stdio: () => mockStdio,
     });
 

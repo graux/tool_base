@@ -31,15 +31,18 @@ void main() {
       Cache.flutterRoot = '/';
     });
 
-    tearDown((){
+    tearDown(() {
       Cache.flutterRoot = null;
     });
 
     testUsingContext('get version remotely', () async {
-      final File settingsFile = fs.file(fs.path.join(Cache.flutterRoot, settingsFileName));
+      final File settingsFile =
+          fs.file(fs.path.join(Cache.flutterRoot, settingsFileName));
       final ToolVersion toolVersion = ToolVersion(toolName, settingsFileName);
-      final String version = await toolVersion.getLatestVersion(forceRemote: true);
-      final String savedVersion = jsonDecode(settingsFile.readAsStringSync())['latestVersion'];
+      final String version =
+          await toolVersion.getLatestVersion(forceRemote: true);
+      final String savedVersion =
+          jsonDecode(settingsFile.readAsStringSync())['latestVersion'];
       expect(version, savedVersion);
     }, overrides: <Type, Generator>{
       FileSystem: () => fs,
@@ -65,17 +68,13 @@ void main() {
       }));
       final ToolVersion toolVersion = ToolVersion('sylph', settingsPath);
       final String version = await toolVersion.getLatestVersion();
-      final String savedVersion = jsonDecode(fs.file(settings).readAsStringSync())[ToolVersion.kLatestVersion];
+      final String savedVersion = jsonDecode(
+          fs.file(settings).readAsStringSync())[ToolVersion.kLatestVersion];
       expect(version, savedVersion);
     }, overrides: <Type, Generator>{
       FileSystem: () => fs,
-      HttpClientFactory: () => () => MockHttpClient(HttpStatus.badRequest, result: jsonEncode(null)),
-    });
-
-    test('get installed version', () {
-      final ToolVersion toolVersion = ToolVersion('sylph', null);
-      final String version = toolVersion.getInstalledVersion();
-      expect(version, isNotNull);
+      HttpClientFactory: () =>
+          () => MockHttpClient(HttpStatus.badRequest, result: jsonEncode(null)),
     });
   });
 }
