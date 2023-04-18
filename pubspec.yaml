@@ -12,7 +12,7 @@ dependencies:
   # To update these, use "flutter update-packages --force-upgrade".
   archive: ">=3.3.0"
   file: ">=6.1.0"
-  intl: ">=0.18.0"
+  intl: ">=0.17.0"
   platform: ">=3.1.0"
   process: ">=4.2.0"
 
