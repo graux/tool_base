@@ -15,9 +15,9 @@ import '../src/context.dart';
 
 void main() {
   testUsingContext('retry from 500', () async {
-    String error;
+    late String error;
     FakeAsync().run((FakeAsync time) {
-      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int> value) {
+      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int>? value) {
         error = 'test completed unexpectedly';
       }, onError: (dynamic exception) {
         error = 'test failed unexpectedly: $exception';
@@ -39,9 +39,9 @@ void main() {
   });
 
   testUsingContext('retry from network error', () async {
-    String error;
+    late String error;
     FakeAsync().run((FakeAsync time) {
-      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int> value) {
+      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int>? value) {
         error = 'test completed unexpectedly';
       }, onError: (dynamic exception) {
         error = 'test failed unexpectedly: $exception';
@@ -63,9 +63,9 @@ void main() {
   });
 
   testUsingContext('retry from SocketException', () async {
-    String error;
+    late String error;
     FakeAsync().run((FakeAsync time) {
-      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int> value) {
+      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int>? value) {
         error = 'test completed unexpectedly';
       }, onError: (dynamic exception) {
         error = 'test failed unexpectedly: $exception';
@@ -90,9 +90,9 @@ void main() {
   });
 
   testUsingContext('no retry from HandshakeException', () async {
-    String error;
+    late String error;
     FakeAsync().run((FakeAsync time) {
-      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int> value) {
+      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int>? value) {
         error = 'test completed unexpectedly';
       }, onError: (dynamic exception) {
         error = 'test failed: $exception';
@@ -110,9 +110,9 @@ void main() {
   });
 
   testUsingContext('check for bad override on ArgumentError', () async {
-    String error;
+    late String error;
     FakeAsync().run((FakeAsync time) {
-      fetchUrl(Uri.parse('example.invalid/')).then((List<int> value) {
+      fetchUrl(Uri.parse('example.invalid/')).then((List<int>? value) {
         error = 'test completed unexpectedly';
       }, onError: (dynamic exception) {
         error = 'test failed: $exception';
@@ -135,9 +135,9 @@ void main() {
   });
 
   testUsingContext('retry from HttpException', () async {
-    String error;
+    late String error;
     FakeAsync().run((FakeAsync time) {
-      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int> value) {
+      fetchUrl(Uri.parse('http://example.invalid/')).then((List<int>? value) {
         error = 'test completed unexpectedly';
       }, onError: (dynamic exception) {
         error = 'test failed unexpectedly: $exception';
@@ -162,11 +162,11 @@ void main() {
   });
 
   testUsingContext('max attempts', () async {
-    String error;
-    List<int> actualResult;
+    late String error;
+    late List<int>? actualResult;
     FakeAsync().run((FakeAsync time) {
       fetchUrl(Uri.parse('http://example.invalid/'), maxAttempts: 3).then(
-          (List<int> value) {
+          (List<int>? value) {
         actualResult = value;
       }, onError: (dynamic exception) {
         error = 'test failed unexpectedly: $exception';
@@ -273,19 +273,6 @@ class MockHttpClientResponse implements io.HttpClientResponse {
 
   @override
   String get reasonPhrase => '<reason phrase>';
-
-  @override
-  StreamSubscription<Uint8List> listen(
-    void onData(Uint8List event), {
-    Function onError,
-    void onDone(),
-    bool cancelOnError,
-  }) {
-    return Stream<Uint8List>.fromFuture(
-            Future<Uint8List>.error(const io.SocketException('test')))
-        .listen(onData,
-            onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-  }
 
   @override
   Future<dynamic> forEach(void Function(Uint8List element) action) {

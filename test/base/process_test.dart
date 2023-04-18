@@ -16,7 +16,7 @@ import '../src/mocks.dart' show MockProcess, MockProcessManager;
 
 void main() {
   group('process exceptions', () {
-    ProcessManager mockProcessManager;
+    late ProcessManager mockProcessManager;
 
     setUp(() {
       mockProcessManager = PlainMockProcessManager();
@@ -35,10 +35,10 @@ void main() {
   group('shutdownHooks', () {
     testUsingContext('runInExpectedOrder', () async {
       int i = 1;
-      int serializeRecording1;
-      int serializeRecording2;
-      int postProcessRecording;
-      int cleanup;
+      late int serializeRecording1;
+      late int serializeRecording2;
+      late int postProcessRecording;
+      late int cleanup;
 
       addShutdownHook(() async {
         serializeRecording1 = i++;
@@ -65,8 +65,8 @@ void main() {
     });
   });
   group('output formatting', () {
-    MockProcessManager mockProcessManager;
-    BufferLogger mockLogger;
+    late MockProcessManager mockProcessManager;
+    late BufferLogger mockLogger;
 
     setUp(() {
       mockProcessManager = MockProcessManager();

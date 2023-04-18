@@ -14,7 +14,7 @@ import 'utils.dart';
 final AnsiTerminal _kAnsiTerminal = AnsiTerminal();
 
 AnsiTerminal get terminal {
-  return (context == null || context.get<AnsiTerminal>() == null)
+  return (context.get<AnsiTerminal?>() == null)
       ? _kAnsiTerminal
       : context.get<AnsiTerminal>();
 }
@@ -31,20 +31,21 @@ enum TerminalColor {
 
 final OutputPreferences _kOutputPreferences = OutputPreferences();
 
-OutputPreferences get outputPreferences => (context == null || context.get<OutputPreferences>() == null)
-    ? _kOutputPreferences
-    : context.get<OutputPreferences>();
+OutputPreferences get outputPreferences =>
+    (context.get<OutputPreferences?>() == null)
+        ? _kOutputPreferences
+        : context.get<OutputPreferences>();
 
 /// A class that contains the context settings for command text output to the
 /// console.
 class OutputPreferences {
   OutputPreferences({
-    bool wrapText,
-    int wrapColumn,
-    bool showColor,
-  }) : wrapText = wrapText ?? io.stdio?.hasTerminal ?? const io.Stdio().hasTerminal,
-       _overrideWrapColumn = wrapColumn,
-       showColor = showColor ?? platform.stdoutSupportsAnsi ?? false;
+    bool? wrapText,
+    int? wrapColumn,
+    bool? showColor,
+  })  : wrapText = wrapText ?? io.stdio.hasTerminal,
+        _overrideWrapColumn = wrapColumn,
+        showColor = showColor ?? platform.stdoutSupportsAnsi;
 
   /// If [wrapText] is true, then any text sent to the context's [Logger]
   /// instance (e.g. from the [printError] or [printStatus] functions) will be
@@ -63,10 +64,12 @@ class OutputPreferences {
   /// and if that's not set, it tries creating a new [io.Stdio] and asks it, if
   /// that doesn't have an idea of the terminal width, then we just use a
   /// default of 100. It will be ignored if [wrapText] is false.
-  final int _overrideWrapColumn;
+  final int? _overrideWrapColumn;
   int get wrapColumn {
-    return  _overrideWrapColumn ?? io.stdio?.terminalColumns
-      ?? const io.Stdio().terminalColumns ?? kDefaultTerminalColumns;
+    return _overrideWrapColumn ??
+        io.stdio.terminalColumns ??
+        const io.Stdio().terminalColumns ??
+        kDefaultTerminalColumns;
   }
 
   /// Whether or not to output ANSI color codes when writing to the output
@@ -105,15 +108,14 @@ class AnsiTerminal {
     TerminalColor.grey: grey,
   };
 
-  static String colorCode(TerminalColor color) => _colorMap[color];
+  static String? colorCode(TerminalColor color) => _colorMap[color];
 
-  bool get supportsColor => platform.stdoutSupportsAnsi ?? false;
-  final RegExp _boldControls = RegExp('(${RegExp.escape(resetBold)}|${RegExp.escape(bold)})');
+  bool get supportsColor => platform.stdoutSupportsAnsi;
+  final RegExp _boldControls =
+      RegExp('(${RegExp.escape(resetBold)}|${RegExp.escape(bold)})');
 
   String bolden(String message) {
-    assert(message != null);
-    if (!supportsColor || message.isEmpty)
-      return message;
+    if (!supportsColor || message.isEmpty) return message;
     final StringBuffer buffer = StringBuffer();
     for (String line in message.split('\n')) {
       // If there were bolds or resetBolds in the string before, then nuke them:
@@ -129,12 +131,10 @@ class AnsiTerminal {
         : result;
   }
 
-  String color(String message, TerminalColor color) {
-    assert(message != null);
-    if (!supportsColor || color == null || message.isEmpty)
-      return message;
+  String color(String message, TerminalColor? color) {
+    if (!supportsColor || color == null || message.isEmpty) return message;
     final StringBuffer buffer = StringBuffer();
-    final String colorCodes = _colorMap[color];
+    final String? colorCodes = _colorMap[color];
     for (String line in message.split('\n')) {
       // If there were resets in the string before, then keep them, but
       // restart the color right after. This prevents embedded resets from
@@ -165,14 +165,16 @@ class AnsiTerminal {
     }
   }
 
-  Stream<String> _broadcastStdInString;
+  Stream<String>? _broadcastStdInString;
 
   /// Return keystrokes from the console.
   ///
   /// Useful when the console is in [singleCharMode].
   Stream<String> get keystrokes {
-    _broadcastStdInString ??= io.stdin.transform<String>(const AsciiDecoder(allowInvalid: true)).asBroadcastStream();
-    return _broadcastStdInString;
+    _broadcastStdInString ??= io.stdin
+        .transform<String>(const AsciiDecoder(allowInvalid: true))
+        .asBroadcastStream();
+    return _broadcastStdInString!;
   }
 
   /// Prompts the user to input a character within a given list. Re-prompts if
@@ -188,24 +190,26 @@ class AnsiTerminal {
   /// `defaultChoiceIndex`.
   Future<String> promptForCharInput(
     List<String> acceptedCharacters, {
-    String prompt,
-    int defaultChoiceIndex,
+    String? prompt,
+    int? defaultChoiceIndex,
     bool displayAcceptedCharacters = true,
   }) async {
-    assert(acceptedCharacters != null);
     assert(acceptedCharacters.isNotEmpty);
     assert(prompt == null || prompt.isNotEmpty);
-    assert(displayAcceptedCharacters != null);
     List<String> charactersToDisplay = acceptedCharacters;
     if (defaultChoiceIndex != null) {
-      assert(defaultChoiceIndex >= 0 && defaultChoiceIndex < acceptedCharacters.length);
+      assert(defaultChoiceIndex >= 0 &&
+          defaultChoiceIndex < acceptedCharacters.length);
       charactersToDisplay = List<String>.from(charactersToDisplay);
-      charactersToDisplay[defaultChoiceIndex] = bolden(charactersToDisplay[defaultChoiceIndex]);
+      charactersToDisplay[defaultChoiceIndex] =
+          bolden(charactersToDisplay[defaultChoiceIndex]);
       acceptedCharacters.add('\n');
     }
-    String choice;
+    String? choice;
     singleCharMode = true;
-    while (choice == null || choice.length > 1 || !acceptedCharacters.contains(choice)) {
+    while (choice == null ||
+        choice.length > 1 ||
+        !acceptedCharacters.contains(choice)) {
       if (prompt != null) {
         printStatus(prompt, emphasis: true, newline: false);
         if (displayAcceptedCharacters)

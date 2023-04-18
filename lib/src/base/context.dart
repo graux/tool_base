@@ -33,7 +33,8 @@ class ContextDependencyCycleException implements Exception {
 /// context will not have any values associated with it.
 ///
 /// This is guaranteed to never return `null`.
-AppContext get context => Zone.current[_Key.key] as AppContext ?? AppContext._root;
+AppContext get context =>
+    Zone.current[_Key.key] as AppContext? ?? AppContext._root;
 
 /// A lookup table (mapping types to values) and an implied scope, in which
 /// code is run.
@@ -53,19 +54,20 @@ class AppContext {
   ]);
 
   final String name;
-  final AppContext _parent;
+  final AppContext? _parent;
   final Map<Type, Generator> _overrides;
   final Map<Type, Generator> _fallbacks;
   final Map<Type, dynamic> _values = <Type, dynamic>{};
 
-  List<Type> _reentrantChecks;
+  List<Type>? _reentrantChecks;
 
   /// Bootstrap context.
   static final AppContext _root = AppContext._(null, 'ROOT');
 
   dynamic _boxNull(dynamic value) => value ?? _BoxedNull.instance;
 
-  dynamic _unboxNull(dynamic value) => value == _BoxedNull.instance ? null : value;
+  dynamic _unboxNull(dynamic value) =>
+      value == _BoxedNull.instance ? null : value;
 
   /// Returns the generated value for [type] if such a generator exists.
   ///
@@ -81,26 +83,24 @@ class AppContext {
   /// If the generator ends up triggering a reentrant call, it signals a
   /// dependency cycle, and a [ContextDependencyCycleException] will be thrown.
   dynamic _generateIfNecessary(Type type, Map<Type, Generator> generators) {
-    if (!generators.containsKey(type))
-      return null;
+    if (!generators.containsKey(type)) return null;
 
     return _values.putIfAbsent(type, () {
       _reentrantChecks ??= <Type>[];
 
-      final int index = _reentrantChecks.indexOf(type);
+      final int index = _reentrantChecks!.indexOf(type);
       if (index >= 0) {
         // We're already in the process of trying to generate this type.
         throw ContextDependencyCycleException._(
-            UnmodifiableListView<Type>(_reentrantChecks.sublist(index)));
+            UnmodifiableListView<Type>(_reentrantChecks!.sublist(index)));
       }
 
-      _reentrantChecks.add(type);
+      _reentrantChecks!.add(type);
       try {
-        return _boxNull(generators[type]());
+        return _boxNull(generators[type]!());
       } finally {
-        _reentrantChecks.removeLast();
-        if (_reentrantChecks.isEmpty)
-          _reentrantChecks = null;
+        _reentrantChecks!.removeLast();
+        if (_reentrantChecks!.isEmpty) _reentrantChecks = null;
       }
     });
   }
@@ -110,7 +110,7 @@ class AppContext {
   T get<T>() {
     dynamic value = _generateIfNecessary(T, _overrides);
     if (value == null && _parent != null) {
-      value = _parent.get<T>();
+      value = _parent!.get<T>();
     }
     return _unboxNull(value ?? _generateIfNecessary(T, _fallbacks)) as T;
   }
@@ -120,8 +120,7 @@ class AppContext {
   @Deprecated('use get<T> instead for type safety.')
   Object operator [](Type type) {
     dynamic value = _generateIfNecessary(type, _overrides);
-    if (value == null && _parent != null)
-      value = _parent[type];
+    if (value == null && _parent != null) value = _parent![type];
     return _unboxNull(value ?? _generateIfNecessary(type, _fallbacks));
   }
 
@@ -138,11 +137,11 @@ class AppContext {
   /// name. This is useful for debugging purposes and is analogous to naming a
   /// thread in Java.
   Future<V> run<V>({
-    @required FutureOr<V> body(),
-    String name,
-    Map<Type, Generator> overrides,
-    Map<Type, Generator> fallbacks,
-    ZoneSpecification zoneSpecification,
+    required FutureOr<V> body(),
+    required String name,
+    Map<Type, Generator>? overrides,
+    Map<Type, Generator>? fallbacks,
+    ZoneSpecification? zoneSpecification,
   }) async {
     final AppContext child = AppContext._(
       this,
@@ -161,17 +160,15 @@ class AppContext {
   String toString() {
     final StringBuffer buf = StringBuffer();
     String indent = '';
-    AppContext ctx = this;
+    AppContext? ctx = this;
     while (ctx != null) {
       buf.write('AppContext');
-      if (ctx.name != null)
-        buf.write('[${ctx.name}]');
+      if (ctx.name != null) buf.write('[${ctx.name}]');
       if (ctx._overrides.isNotEmpty)
         buf.write('\n$indent  overrides: [${ctx._overrides.keys.join(', ')}]');
       if (ctx._fallbacks.isNotEmpty)
         buf.write('\n$indent  fallbacks: [${ctx._fallbacks.keys.join(', ')}]');
-      if (ctx._parent != null)
-        buf.write('\n$indent  parent: ');
+      if (ctx._parent != null) buf.write('\n$indent  parent: ');
       ctx = ctx._parent;
       indent += '  ';
     }

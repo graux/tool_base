@@ -17,7 +17,7 @@ const ProcessManager _kLocalProcessManager = LocalProcessManager();
 
 /// The active process manager.
 ProcessManager get processManager =>
-    context.get<ProcessManager>() ?? _kLocalProcessManager;
+    context.get<ProcessManager?>() ?? _kLocalProcessManager;
 
 /// Gets a [ProcessManager] that will record process invocation activity to the
 /// specified base recording [location].

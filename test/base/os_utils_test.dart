@@ -11,7 +11,7 @@ import '../src/context.dart';
 
 void main() {
   group('OperatingSystemUtils', () {
-    Directory tempDir;
+    late Directory tempDir;
 
     setUp(() {
       tempDir =

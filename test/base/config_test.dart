@@ -8,8 +8,8 @@ import 'package:tool_base/src/base/file_system.dart';
 import '../src/common.dart';
 
 void main() {
-  Config config;
-  Directory tempDir;
+  late Config config;
+  late Directory tempDir;
 
   setUp(() {
     tempDir = fs.systemTempDirectory.createTempSync('flutter_config_test.');

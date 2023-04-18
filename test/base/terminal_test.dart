@@ -32,7 +32,7 @@ void main() {
   });
 
   group('ANSI coloring and bold', () {
-    AnsiTerminal terminal;
+    late AnsiTerminal terminal;
 
     setUp(() {
       terminal = AnsiTerminal();
@@ -131,7 +131,7 @@ void main() {
   });
 
   group('character input prompt', () {
-    AnsiTerminal terminalUnderTest;
+    late AnsiTerminal terminalUnderTest;
 
     setUp(() {
       terminalUnderTest = TestTerminal();
@@ -176,7 +176,7 @@ void main() {
   });
 }
 
-Stream<String> mockStdInStream;
+late Stream<String> mockStdInStream;
 
 class TestTerminal extends AnsiTerminal {
   @override

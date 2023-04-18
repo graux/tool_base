@@ -11,7 +11,7 @@ import '../src/context.dart';
 
 void main() {
   group('ensureDirectoryExists', () {
-    MemoryFileSystem fs;
+    late MemoryFileSystem fs;
 
     setUp(() {
       fs = MemoryFileSystem();

@@ -24,7 +24,7 @@ void main() {
   group('ToolVersion', () {
     const String settingsFileName = 'settings.json';
     const String toolName = 'sylph';
-    MemoryFileSystem fs;
+    late MemoryFileSystem fs;
 
     setUp(() {
       fs = MemoryFileSystem();
@@ -37,7 +37,7 @@ void main() {
 
     testUsingContext('get version remotely', () async {
       final File settingsFile =
-          fs.file(fs.path.join(Cache.flutterRoot, settingsFileName));
+          fs.file(fs.path.join(Cache.flutterRoot!, settingsFileName));
       final ToolVersion toolVersion = ToolVersion(toolName, settingsFileName);
       final String version =
           await toolVersion.getLatestVersion(forceRemote: true);
@@ -80,7 +80,7 @@ void main() {
 }
 
 class MockHttpClient implements HttpClient {
-  MockHttpClient(this.statusCode, {this.result});
+  MockHttpClient(this.statusCode, {required this.result});
 
   final int statusCode;
   final String result;
@@ -97,7 +97,7 @@ class MockHttpClient implements HttpClient {
 }
 
 class MockHttpClientRequest implements HttpClientRequest {
-  MockHttpClientRequest(this.statusCode, {this.result});
+  MockHttpClientRequest(this.statusCode, {required this.result});
 
   final int statusCode;
   final String result;
@@ -114,7 +114,7 @@ class MockHttpClientRequest implements HttpClientRequest {
 }
 
 class MockHttpClientResponse implements HttpClientResponse {
-  MockHttpClientResponse(this.statusCode, {this.result});
+  MockHttpClientResponse(this.statusCode, {required this.result});
 
   @override
   final int statusCode;
@@ -127,19 +127,6 @@ class MockHttpClientResponse implements HttpClientResponse {
   @override
   HttpClientResponseCompressionState get compressionState {
     return HttpClientResponseCompressionState.decompressed;
-  }
-
-  @override
-  StreamSubscription<Uint8List> listen(
-    void onData(Uint8List event), {
-    Function onError,
-    void onDone(),
-    bool cancelOnError,
-  }) {
-    return Stream<Uint8List>.fromIterable(
-            <Uint8List>[Uint8List.fromList(result.codeUnits)])
-        .listen(onData,
-            onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   @override

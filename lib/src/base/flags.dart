@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:args/args.dart';
+import 'package:args/src/arg_results.dart';
 
 import 'context.dart';
 
@@ -17,8 +18,7 @@ Flags get flags => context.get<Flags>();
 /// the Flutter tool (immediately after the arguments have been parsed in
 /// [FlutterCommandRunner]) and is available via the [flags] global property.
 class Flags {
-  Flags(this._globalResults)
-    : assert(_globalResults != null);
+  Flags(this._globalResults);
 
   final ArgResults _globalResults;
 
@@ -34,21 +34,21 @@ class Flags {
   /// If the specified flag is not defined or was not specified and had no
   /// default, then this will return `null`.
   dynamic operator [](String key) {
-    final ArgResults commandResults = _globalResults.command;
-    final Iterable<String> options = commandResults?.options;
+    final ArgResults? commandResults = _globalResults.command;
+    final Iterable<String>? options = commandResults?.options;
     if (options != null && options.contains(key))
-      return commandResults[key];
-    else if (_globalResults.options.contains(key))
-      return _globalResults[key];
+      return commandResults![key];
+    else if (_globalResults.options.contains(key)) return _globalResults[key];
     return null;
   }
 
   /// `true` iff the given flag/option was either explicitly specified by the
   /// user at the command-line or it was defined to have a default value.
   bool contains(String key) {
-    final ArgResults commandResults = _globalResults.command;
-    final Iterable<String> options = commandResults?.options;
-    return (options != null && options.contains(key)) || _globalResults.options.contains(key);
+    final ArgResults? commandResults = _globalResults.command;
+    final Iterable<String>? options = commandResults?.options;
+    return (options != null && options.contains(key)) ||
+        _globalResults.options.contains(key);
   }
 }
 
@@ -56,11 +56,18 @@ class EmptyFlags implements Flags {
   const EmptyFlags();
 
   @override
-  ArgResults get _globalResults => null;
-
-  @override
-  String operator [](String key) => null;
-
-  @override
   bool contains(String key) => false;
+
+  @override
+  dynamic operator [](String key) => null;
+
+  @override
+  ArgResults get _globalResults => newArgResults(
+        ArgParser.allowAnything(),
+        const <String, dynamic>{},
+        null,
+        null,
+        [],
+        [],
+      );
 }

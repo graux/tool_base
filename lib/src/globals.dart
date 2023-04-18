@@ -21,13 +21,13 @@ Config get config => Config.instance;
 /// Set [color] to a [TerminalColor] to color the output, if the logger
 /// supports it. The [color] defaults to [TerminalColor.red].
 void printError(
-  String message, {
-  StackTrace stackTrace,
-  bool emphasis,
-  TerminalColor color,
-  int indent,
-  int hangingIndent,
-  bool wrap,
+  String? message, {
+  StackTrace? stackTrace,
+  bool? emphasis,
+  TerminalColor? color,
+  int? indent,
+  int? hangingIndent,
+  bool? wrap,
 }) {
   logger.printError(
     message,
@@ -50,13 +50,13 @@ void printError(
 /// If `indent` is provided, each line of the message will be prepended by the
 /// specified number of whitespaces.
 void printStatus(
-  String message, {
-  bool emphasis,
-  bool newline,
-  TerminalColor color,
-  int indent,
-  int hangingIndent,
-  bool wrap,
+  String? message, {
+  bool? emphasis,
+  bool? newline,
+  TerminalColor? color,
+  int? indent,
+  int? hangingIndent,
+  bool? wrap,
 }) {
   logger.printStatus(
     message,

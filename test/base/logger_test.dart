@@ -73,9 +73,9 @@ void main() {
   });
 
   group('Spinners', () {
-    MockStdio mockStdio;
-    FakeStopwatch mockStopwatch;
-    int called;
+    late MockStdio mockStdio;
+    late FakeStopwatch mockStopwatch;
+    late int called;
     const List<String> testPlatforms = <String>[
       'linux',
       'macos',
@@ -370,7 +370,7 @@ void main() {
           expect(times, isNotNull);
           expect(times, hasLength(1));
           final Match match = times.single;
-          expect(lines[0], endsWith(match.group(0)));
+          expect(lines[0], endsWith(match.group(0)!));
           expect(called, equals(1));
           expect(lines.length, equals(2));
           expect(lines[1], equals(''));
@@ -393,9 +393,9 @@ void main() {
     }
   });
   group('Output format', () {
-    MockStdio mockStdio;
-    SummaryStatus summaryStatus;
-    int called;
+    late MockStdio mockStdio;
+    late SummaryStatus summaryStatus;
+    late int called;
     final RegExp secondDigits =
         RegExp(r'[^\b]\b\b\b\b\b[0-9]+[.][0-9]+(?:s|ms)');
 
@@ -732,7 +732,7 @@ void main() {
       expect(matches, isNotNull);
       expect(matches, hasLength(1));
       final Match match = matches.first;
-      expect(lines[0], endsWith(match.group(0)));
+      expect(lines[0], endsWith(match.group(0)!));
       expect(called, equals(1));
       expect(lines.length, equals(2));
       expect(lines[1], equals(''));
@@ -795,7 +795,7 @@ void main() {
 
     testUsingContext('sequential startProgress calls with BufferLogger',
         () async {
-      final BufferLogger logger = context.get<Logger>();
+      final BufferLogger logger = context.get<BufferLogger>();
       logger.startProgress('AAA', timeout: timeoutConfiguration.fastOperation)
         ..stop();
       logger.startProgress('BBB', timeout: timeoutConfiguration.fastOperation)
