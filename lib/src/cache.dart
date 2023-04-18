@@ -112,7 +112,7 @@ class Cache {
   final List<CachedArtifact> _artifacts = <CachedArtifact>[];
 
   // Initialized by FlutterCommandRunner on startup.
-  static String? flutterRoot;
+  static late String flutterRoot;
 
   // Whether to cache artifacts for all platforms. Defaults to only caching
   // artifacts for the current platform.
@@ -231,7 +231,7 @@ class Cache {
     if (_rootOverride != null)
       path = fs.path.join(_rootOverride!.path, 'bin', 'cache');
     else
-      path = fs.path.join(flutterRoot!, 'bin', 'cache');
+      path = fs.path.join(flutterRoot, 'bin', 'cache');
     final Directory dir = fs.directory(path);
     if (!dir.existsSync()) dir.create(recursive: true);
     return dir;
@@ -285,7 +285,7 @@ class Cache {
 
   String getVersionFor(String artifactName) {
     final File versionFile = fs.file(fs.path.join(
-        _rootOverride?.path ?? flutterRoot!,
+        _rootOverride?.path ?? flutterRoot,
         'bin',
         'internal',
         '$artifactName.version'));
@@ -675,7 +675,7 @@ abstract class EngineCachedArtifact extends CachedArtifact {
     }
 
     final File licenseSource =
-        fs.file(fs.path.join(Cache.flutterRoot!, 'LICENSE'));
+        fs.file(fs.path.join(Cache.flutterRoot, 'LICENSE'));
     for (String licenseDir in getLicenseDirs()) {
       final String licenseDestinationPath =
           fs.path.join(location.path, licenseDir, 'LICENSE');
