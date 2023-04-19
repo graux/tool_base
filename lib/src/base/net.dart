@@ -41,7 +41,7 @@ Future<List<int>?> _attempt(Uri url, {bool onlyHeaders = false}) async {
   printTrace('Downloading: $url');
   HttpClient httpClient;
   if (context.get<HttpClientFactory?>() != null) {
-    httpClient = context.get<HttpClientFactory>()();
+    httpClient = context.get<HttpClientFactory>()!();
   } else {
     httpClient = HttpClient();
   }

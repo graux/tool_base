@@ -16,7 +16,7 @@ final AnsiTerminal _kAnsiTerminal = AnsiTerminal();
 AnsiTerminal get terminal {
   return (context.get<AnsiTerminal?>() == null)
       ? _kAnsiTerminal
-      : context.get<AnsiTerminal>();
+      : context.get<AnsiTerminal>()!;
 }
 
 enum TerminalColor {
@@ -34,7 +34,7 @@ final OutputPreferences _kOutputPreferences = OutputPreferences();
 OutputPreferences get outputPreferences =>
     (context.get<OutputPreferences?>() == null)
         ? _kOutputPreferences
-        : context.get<OutputPreferences>();
+        : context.get<OutputPreferences>()!;
 
 /// A class that contains the context settings for command text output to the
 /// console.

@@ -22,7 +22,7 @@ class ToolVersion {
   final String settingsPath;
   Uri? _url;
 
-  static ToolVersion get instance => context.get<ToolVersion>();
+  static ToolVersion get instance => context.get<ToolVersion>()!;
 
 //  http.Client _client;
   File? _file;

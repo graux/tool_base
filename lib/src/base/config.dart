@@ -15,7 +15,7 @@ class Config {
       _values = json.decode(_configFile.readAsStringSync());
   }
 
-  static Config get instance => context.get<Config>();
+  static Config get instance => context.get<Config>()!;
 
   late File _configFile;
   String get configPath => _configFile.path;

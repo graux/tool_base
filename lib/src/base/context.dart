@@ -53,7 +53,7 @@ class AppContext {
     this._fallbacks = const <Type, Generator>{},
   ]);
 
-  final String name;
+  final String? name;
   final AppContext? _parent;
   final Map<Type, Generator> _overrides;
   final Map<Type, Generator> _fallbacks;
@@ -107,7 +107,7 @@ class AppContext {
 
   /// Gets the value associated with the specified [type], or `null` if no
   /// such value has been associated.
-  T get<T>() {
+  T? get<T>() {
     dynamic value = _generateIfNecessary(T, _overrides);
     if (value == null && _parent != null) {
       value = _parent!.get<T>();
@@ -138,7 +138,7 @@ class AppContext {
   /// thread in Java.
   Future<V> run<V>({
     required FutureOr<V> body(),
-    required String name,
+    String? name,
     Map<Type, Generator>? overrides,
     Map<Type, Generator>? fallbacks,
     ZoneSpecification? zoneSpecification,

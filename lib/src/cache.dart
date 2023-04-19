@@ -223,7 +223,7 @@ class Cache {
 
   String? _engineRevision;
 
-  static Cache get instance => context.get<Cache>();
+  static Cache get instance => context.get<Cache>()!;
 
   /// Return the top-level directory in the cache; this is `bin/cache`.
   Directory getRoot() {
