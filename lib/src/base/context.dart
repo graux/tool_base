@@ -64,11 +64,6 @@ class AppContext {
   /// Bootstrap context.
   static final AppContext _root = AppContext._(null, 'ROOT');
 
-  dynamic _boxNull(dynamic value) => value ?? _BoxedNull.instance;
-
-  dynamic _unboxNull(dynamic value) =>
-      value == _BoxedNull.instance ? null : value;
-
   /// Returns the generated value for [type] if such a generator exists.
   ///
   /// If [generators] does not contain a mapping for the specified [type], this
@@ -97,7 +92,7 @@ class AppContext {
 
       _reentrantChecks!.add(type);
       try {
-        return _boxNull(generators[type]!());
+        return generators[type]?.call();
       } finally {
         _reentrantChecks!.removeLast();
         if (_reentrantChecks!.isEmpty) _reentrantChecks = null;
@@ -112,7 +107,7 @@ class AppContext {
     if (value == null && _parent != null) {
       value = _parent!.get<T>();
     }
-    return _unboxNull(value ?? _generateIfNecessary(T, _fallbacks)) as T;
+    return value ?? _generateIfNecessary(T, _fallbacks) as T?;
   }
 
   /// Gets the value associated with the specified [type], or `null` if no
@@ -121,7 +116,7 @@ class AppContext {
   Object operator [](Type type) {
     dynamic value = _generateIfNecessary(type, _overrides);
     if (value == null && _parent != null) value = _parent![type];
-    return _unboxNull(value ?? _generateIfNecessary(type, _fallbacks));
+    return value ?? _generateIfNecessary(type, _fallbacks);
   }
 
   /// Runs [body] in a child context and returns the value returned by [body].
@@ -184,11 +179,4 @@ class _Key {
 
   @override
   String toString() => 'context';
-}
-
-/// Private object that denotes a generated `null` value.
-class _BoxedNull {
-  const _BoxedNull();
-
-  static const _BoxedNull instance = _BoxedNull();
 }
