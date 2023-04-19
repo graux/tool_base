@@ -48,7 +48,7 @@ void main() {
       when(mockProcessManager.runSync(<String>['which', '-a', kExecutable]))
           .thenReturn(ProcessResult(0, 0, '$kPath1\n$kPath2', null));
       final OperatingSystemUtils utils = OperatingSystemUtils();
-      final List<File> result = utils.whichAll(kExecutable) ?? [];
+      final List<File> result = utils.whichAll(kExecutable);
       expect(result, hasLength(2));
       expect(result[0].path, kPath1);
       expect(result[1].path, kPath2);
@@ -83,7 +83,7 @@ void main() {
       when(mockProcessManager.runSync(<String>['where', kExecutable]))
           .thenReturn(ProcessResult(0, 0, '$kPath1\n$kPath2', null));
       final OperatingSystemUtils utils = OperatingSystemUtils();
-      final List<File> result = utils.whichAll(kExecutable) ?? [];
+      final List<File> result = utils.whichAll(kExecutable);
       expect(result, hasLength(2));
       expect(result[0].path, kPath1);
       expect(result[1].path, kPath2);

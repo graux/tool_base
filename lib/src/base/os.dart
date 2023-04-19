@@ -50,7 +50,7 @@ abstract class OperatingSystemUtils {
   List<File> whichAll(String execName) => _which(execName, all: true);
 
   /// Return the File representing a new pipe.
-  File makePipe(String path);
+  File? makePipe(String path);
 
   void zip(Directory data, File zipFile);
 
