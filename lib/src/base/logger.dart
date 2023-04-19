@@ -20,7 +20,7 @@ const Duration _kSlowOperation = Duration(minutes: 2);
 ///
 /// If not provided via injection, a default instance is provided.
 TimeoutConfiguration get timeoutConfiguration =>
-    context.get<TimeoutConfiguration?>() ?? const TimeoutConfiguration();
+    context.get<TimeoutConfiguration>() ?? const TimeoutConfiguration();
 
 class TimeoutConfiguration {
   const TimeoutConfiguration();
@@ -489,7 +489,7 @@ abstract class Status {
   final VoidCallback? onFinish;
 
   @protected
-  final Stopwatch _stopwatch = context.get<Stopwatch?>() ?? Stopwatch();
+  final Stopwatch _stopwatch = context.get<Stopwatch>() ?? Stopwatch();
 
   @protected
   @visibleForTesting

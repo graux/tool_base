@@ -14,7 +14,7 @@ import 'utils.dart';
 final AnsiTerminal _kAnsiTerminal = AnsiTerminal();
 
 AnsiTerminal get terminal {
-  return (context.get<AnsiTerminal?>() == null)
+  return (context.get<AnsiTerminal>() == null)
       ? _kAnsiTerminal
       : context.get<AnsiTerminal>()!;
 }
@@ -32,7 +32,7 @@ enum TerminalColor {
 final OutputPreferences _kOutputPreferences = OutputPreferences();
 
 OutputPreferences get outputPreferences =>
-    (context.get<OutputPreferences?>() == null)
+    (context.get<OutputPreferences>() == null)
         ? _kOutputPreferences
         : context.get<OutputPreferences>()!;
 

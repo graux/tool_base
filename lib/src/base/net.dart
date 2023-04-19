@@ -40,7 +40,7 @@ Future<bool> doesRemoteFileExist(Uri url) async =>
 Future<List<int>?> _attempt(Uri url, {bool onlyHeaders = false}) async {
   printTrace('Downloading: $url');
   HttpClient httpClient;
-  if (context.get<HttpClientFactory?>() != null) {
+  if (context.get<HttpClientFactory>() != null) {
     httpClient = context.get<HttpClientFactory>()!();
   } else {
     httpClient = HttpClient();
