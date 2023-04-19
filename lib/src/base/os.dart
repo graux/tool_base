@@ -40,14 +40,14 @@ abstract class OperatingSystemUtils {
   /// Return the path (with symlinks resolved) to the given executable, or null
   /// if `which` was not able to locate the binary.
   File? which(String execName) {
-    final List<File>? result = _which(execName);
-    if (result == null || result.isEmpty) return null;
+    final List<File> result = _which(execName);
+    if (result.isEmpty) return null;
     return result.first;
   }
 
   /// Return a list of all paths to `execName` found on the system. Uses the
   /// PATH environment variable.
-  List<File>? whichAll(String execName) => _which(execName, all: true);
+  List<File> whichAll(String execName) => _which(execName, all: true);
 
   /// Return the File representing a new pipe.
   File makePipe(String path);
@@ -77,7 +77,7 @@ abstract class OperatingSystemUtils {
     return osNames[osName] ?? osName;
   }
 
-  List<File>? _which(String execName, {bool all = false});
+  List<File> _which(String execName, {bool all = false});
 
   /// Returns the separator between items in the PATH environment variable.
   String get pathVarSeparator;
