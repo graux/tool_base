@@ -94,7 +94,7 @@ Future<void> runShutdownHooks() async {
   printTrace('Shutdown hooks complete');
 }
 
-Map<String, String> _environment(bool allowReentrantFlutter,
+Map<String, String>? _environment(bool allowReentrantFlutter,
     [Map<String, String>? environment]) {
   if (allowReentrantFlutter) {
     if (environment == null)
@@ -103,7 +103,7 @@ Map<String, String> _environment(bool allowReentrantFlutter,
       environment['FLUTTER_ALREADY_LOCKED'] = 'true';
   }
 
-  return environment!;
+  return environment;
 }
 
 /// This runs the command in the background from the specified working
