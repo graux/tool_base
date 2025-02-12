@@ -1,11 +1,11 @@
 name: tool_base
 description: Base for developing command line apps. Take from Flutter Tools.
 version: 1.10.0
-homepage: https://github.com/DrBu7cher/tool_base
+homepage: https://github.com/jonasbadstuebner/tool_base
 publish_to: none
 
 environment:
-  sdk: ">=2.18.6 <3.0.0"
+  sdk: ">=3.6.0<4.0.0"
 
 dependencies:
   # To update these, use "flutter update-packages --force-upgrade".
